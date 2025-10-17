@@ -26,11 +26,11 @@ def main():
 
     # Number of iterations the model should run
     runs = 300
-    nreps = 30
+    nreps = 50
 
 
-    init_global_params = 1500
-    global_threashold = 1000
+    init_global_params = 2500
+    global_threashold = 2000
     token_threashold = 10
     token_accounts = 10
 
@@ -140,7 +140,7 @@ def main():
 
     #model_data.to_csv("model_data_c=" + str(c_tot) + "_m=" + str(m).csv")
 
-    pd.concat(data).to_csv("example_scenarios_G_impact.csv")
+    pd.concat(data).to_csv("example_scenarios_G_impact_50reps.csv")
       
 
 

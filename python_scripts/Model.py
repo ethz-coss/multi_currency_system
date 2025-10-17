@@ -56,7 +56,7 @@ class Model():
         self.traded_amounts = np.zeros(self.nglob)
 
 
-    def run(self, numIterations, printIt=False, critical_jumps = [], mean_jump_size = 100, jump_params = [], dynamic_ci = False, incr_consts = [], returnNeeds = False):
+    def run(self, numIterations, printIt=False, critical_jumps = [], mean_jump_size = 100, jump_params = [], dynamic_ci = False, incr_consts = [], returnNeeds = False, allowTrade = True):
         """
             Input:
                 numIterations: (int), number of iterations of one cycle of the model
@@ -103,12 +103,12 @@ class Model():
             
             ### simulate one model cycle
             if t in critical_jumps:
-                numMines, numTrades = self.step(self.increase_constants, mean_jump_size, jump_params)
+                numMines, numTrades = self.step(self.increase_constants, mean_jump_size, jump_params, allowTrade=allowTrade)
             else:
                 if dynamic_ci:
-                    numMines, numTrades = self.step(incr_consts[t], 0.0)
+                    numMines, numTrades = self.step(incr_consts[t], 0.0, allowTrade=allowTrade)
                 else:
-                    numMines, numTrades = self.step(self.increase_constants, 0.0)
+                    numMines, numTrades = self.step(self.increase_constants, 0.0, allowTrade=allowTrade)
 
             nMinesEvol[t] = numMines
             nTradesEvol[t] = numTrades
@@ -193,7 +193,7 @@ class Model():
 
         return data
 
-    def step(self, increase_chonstants, external_events = 0.0, jump_params = []):
+    def step(self, increase_chonstants, external_events = 0.0, jump_params = [], allowTrade = True):
         """
             executes one iteration step of the model.
 
@@ -213,16 +213,20 @@ class Model():
         
         self.update_needs()
         self.update_values()
+        #print("before choice: ", self.actions)
 
         for agent in range(self.nagents):
-            self.agent_chooses_currency_and_action(agent)
-
+            self.agent_chooses_currency_and_action(agent, allowTrade=allowTrade)
+        
+        #print("at start:      ", self.actions)
         numTrades = self.perform_trading()
+        #print("after trading: ", self.actions)
 
         numMines = self.perform_mining(self.mining_amounts) 
-      
-        self.spend_tokens(self.spending_amount) 
+        #print("after  mining: ", self.actions)
 
+        self.spend_tokens(self.spending_amount) 
+        #print("at end       : ", self.actions)
         return numMines, numTrades
 
 
@@ -255,7 +259,7 @@ class Model():
 
         return (self.offset + self.values[c1]) / (self.offset + self.values[c2])
 
-    def agent_chooses_currency_and_action(self, agent):
+    def agent_chooses_currency_and_action(self, agent, allowTrade = True):
         my_world_needs = self.world_needs[agent]
         my_currency_needs = self.currency_needs[agent]
         highest_needs = np.maximum(my_world_needs, my_currency_needs)
@@ -279,7 +283,9 @@ class Model():
             p = self.rng.uniform()
             if p < 0.5:
                 my_action = MINE
-            
+
+        if   my_action == TRADE and allowTrade == False:
+            my_action = MINE
 
         self.active_currencies[agent] = active_currency
         self.actions[agent] = my_action
@@ -308,27 +314,34 @@ class Model():
         numTrades = 0
         #shuffle traders s.t. random trading order
         self.rng.shuffle(traders)
+        
+        if (len(traders) == 1):
+            self.actions[traders] = MINE
+        else:
+            # perform trading: 
+            for i in range(len(traders)): # -1 because last trader can't trade since no more partners available
+                a = traders[i]
+                if (self.actions[a] == TRADE):
+                    if (i == len(traders) - 1):
+                        self.actions[a] = MINE
+                    else:
+                        possible_partners = []
+                        
+                        for b in traders[i+1:]:
+                            if self.check_if_trading_possible(a,b):
+                                possible_partners.append(b)
 
-        # perform trading: 
-        for i in range(len(traders) - 1): # -1 because last trader can't trade since no more partners available
-            a = traders[i]
-            possible_partners = []
-             
-            for b in traders[i+1:]:
-                if self.check_if_trading_possible(a,b):
-                    possible_partners.append(b)
 
-
-            # If no coutnerpart was found, the agent resorts to mining. Otherwise, the trade partner is chosen randomly from the counterpart list
-            if (len(possible_partners) == 0):
-                self.actions[a] = MINE
-            
-            else:
-                numTrades += 1
-                b = self.rng.choice(possible_partners)
-                self.trade_with_exchange_rates(a, b)
-                self.actions[b] = SLEEP
-                self.actions[a] = SLEEP
+                        # If no coutnerpart was found, the agent resorts to mining. Otherwise, the trade partner is chosen randomly from the counterpart list
+                        if (len(possible_partners) == 0):
+                            self.actions[a] = MINE
+                        
+                        else:
+                            numTrades += 1
+                            b = self.rng.choice(possible_partners)
+                            self.trade_with_exchange_rates(a, b)
+                            self.actions[b] = SLEEP
+                            self.actions[a] = SLEEP
 
         return numTrades
         

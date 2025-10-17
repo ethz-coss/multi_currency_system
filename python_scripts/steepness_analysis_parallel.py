@@ -10,9 +10,8 @@ from os import path
 import multiprocessing
 from itertools import product
 
-nreps = 10
+nreps = 50
 
-#TODO (unfinished)
 
 """
     This script runs the model for different m and c values to analyze the equilibrium increase in the global parameters dependent on m and c
@@ -22,16 +21,16 @@ nreps = 10
 # Number of iterations the model should run
 runs = 1000
 
-init_global_params = 1000
-global_threashold = 1000
-token_threashold = 100
-token_accounts = 100
+init_global_params = 2000
+global_threashold = 2000
+token_threashold = 10
+token_accounts = 10
 
 #agentType = AgentType.DEFAULT
 
 #const. total increase of global quantities
 nagents = 100
-nglob = 4
+nglob = 5
 s = 0.0 # irrelevant
 
 c_tot_vals = [0.2, 0.4, 0.6, 0.8, 1.0]
@@ -99,7 +98,7 @@ def main():
     p = multiprocessing.Pool() 
     # map list to target function 
     result = p.map(call_model, np.arange(nreps)) 
-    pd.concat(result).to_csv("steepness_vs_m_c_parallel.csv")
+    pd.concat(result).to_csv("steepness_vs_m_c_parallel_50reps.csv")
 
     print("finished")
 

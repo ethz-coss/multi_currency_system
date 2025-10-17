@@ -27,7 +27,7 @@ def main():
    
     # #lin increasing case
     nagents = 100
-    nglob = 3
+    nglob = 1
     m = 1.0 
     s = 0.5
 

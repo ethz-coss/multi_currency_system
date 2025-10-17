@@ -22,9 +22,11 @@ The output is stored in "equilibrium_vs_s_c_manyS.csv" and visualized in "eq_ana
 
 # Number of iterations the model should run
 runs = 3000
-nreps = 20
+nreps = 50
 
-init_global_params = 1000.0
+allowTrade = False #True
+
+init_global_params = 3000.0
 global_threashold = 2000.0
 token_threashold = 10.0
 token_accounts = 0.0
@@ -33,11 +35,12 @@ token_accounts = 0.0
 
 #const. total increase of global quantities
 nagents = 100
-nglob = 5
+nglob = 4 #5
 m = 1.0 
-s = 1.0 #0.6 # s/G = 0.12
+#s = 1.0 #0.6 # s/G = 0.12
 c_tot_vals = [0.1, 0.4, 0.7]
-s_vals = [0.4, 0.8, 1.2]
+#s_g_ratios = np.array([0.08, 0.16, 0.24])
+s_vals = [0.25, 0.5, 0.75, 1.0, 1.25]
 
 # c_tot_vals = [0.2, 0.4, 0.6, 0.8, 1.0]
 # s_vals = c_tot_vals
@@ -76,7 +79,7 @@ def run_model(rng, c, m, s):
                     model_params["mining_amounts"],
                     model_params["spending_amount"], rng)
 
-    model_data = model.run(runs)
+    model_data = model.run(runs, allowTrade=allowTrade)
 
     model_data['c_tot'] = c
     model_data['m'] = m
@@ -113,7 +116,7 @@ def main():
     p = multiprocessing.Pool() 
     # map list to target function 
     result = p.map(call_model, np.arange(nreps)) 
-    pd.concat(result).to_csv("equilibrium_vs_s_c_manyS.csv")
+    pd.concat(result).to_csv("data/equilibrium_vs_s_c_manyS_50reps_noTrading_higherInit.csv")
 
     print("finished")
 

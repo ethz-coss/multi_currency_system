@@ -18,19 +18,19 @@ Output is stored in the file "random_crisis.csv" and visualized in the file "cri
 
 def main():
 
-  reps = [7] #[1,2,3,7]
+  reps = [1,2,3,4,5,6] # [7]
   runs = 8000
   nagents = 100
   nglob = 5
   m = 1.0
   s = 0.5 #0.2
-  c = 1.0
+  c = 0.9 #1.0
   c_variance = 0.01 # random walk of increase constants
   #c changes every 10-th. step
 
-  minGamma = 500
-  maxGamma = 1500
-  g_init = 200
+  minGamma = 2000 #500
+  maxGamma = 3000 #1500
+  g_init = 1000 #200
 
   numJumps = 10
   meanJumpSize = maxGamma * 2.0 #0.5 # g_i = g_i + uniform(meanJumpSize/2, meanJumpSize + meanJumpSize/2) 
@@ -67,8 +67,8 @@ def main():
                                       "global_quantities": np.full(nglob, g_init), 
                                     "quantities_increase": incrConsts, #np.random.uniform(0.05, 0.35, nglob), #np.full(nglob, 0.2), #  g_i += c_i after each step
                                     "quantity_threashold": gammas, #np.full((nagents,nglob), 1000),
-                                    "currency_threshold": rng.uniform(50,100, size= (nagents,nglob)), #np.full((nagents,nglob), 100),
-                                        "token_accounts": rng.uniform(50,100, size= (nagents,nglob)) #np.full((nagents,nglob), 100) 
+                                    "currency_threshold": rng.uniform(10,20, size= (nagents,nglob)), #np.full((nagents,nglob), 100),
+                                        "token_accounts": rng.uniform(10,20, size= (nagents,nglob)) #np.full((nagents,nglob), 100) 
                                         }
 
       for nJumps in [0, numJumps]:
@@ -105,7 +105,7 @@ def main():
 
         total_data.append(df)
 
-  pd.concat(total_data).to_csv("random_crisis.csv")
+  pd.concat(total_data).to_csv("data/random_crisis_sameParams.csv")
   #model_data.to_csv("model_data.csv")
 
 

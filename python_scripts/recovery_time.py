@@ -36,24 +36,24 @@ def run_model(model_params, jump_size, jump_point, jump_param, rng, runs):
 
 
 def main():
-    numReps = 20
+    numReps = 50
     seed = 11
     rng = np.random.default_rng(seed)
     """ Defines the parameters of the model run, runs the model and plots results. """
 
     # Number of iterations the model should run
-    runs = 2000
+    runs = 4000
     nagents = 100
     nglob = 5
-    m = 0.5
-    c = 0.3 
-    s= 0.6 #0.1
+    m = 1 #0.5
+    c = 0.8 #0.3 
+    s= 0.5 #0.1
 
-    taus = rng.uniform(50,100, size= (nagents,nglob))
+    taus = rng.uniform(10,20, size= (nagents,nglob))
 
     model_params = {"nr_agents": nagents, "initial_tokens": np.zeros(nglob), "nr_global_params": nglob, 
                                       "spending_amount": s,
-                                    "global_quantities": np.full(nglob, 2500), 
+                                    "global_quantities": np.full(nglob, 1000), 
                                   "quantity_threashold": rng.uniform(2000,3000, size= (nagents,nglob)), #np.full((nagents,nglob), 1000),
                                    "currency_threshold": taus, #np.full((nagents,nglob), 100),
                                        "token_accounts": taus #np.full((nagents,nglob), 100) 
@@ -62,10 +62,10 @@ def main():
   
     ####### crisis in stable system (m < ctot) ####
   
-    jump_point = 500
+    jump_point = 1000
     jump_sizes = np.arange(1000,10000, step=2000)#np.logspace(3, 5, num = 5) #np.arange(100, 2000, 100)
     print(jump_sizes)
-    jump_param = 0
+    jump_param = 1
 
    #runs = 1000 + jump_sizes//10
     print(runs)
@@ -85,7 +85,7 @@ def main():
             data.append(df)
 
 
-    pd.concat(data).to_csv("recovery_time_linear_bigS.csv")
+    pd.concat(data).to_csv("recovery_time_linear_bigS_50reps.csv")
     
     # model = Model(model_params["nr_agents"], 
     #               model_params["nr_global_params"], 

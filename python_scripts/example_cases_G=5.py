@@ -156,7 +156,7 @@ def main():
             #model_data['agent threasholds'] = str(increases)
             data.append((model_data))
 
-        pd.concat(data).to_csv("case_G=5_c=" + str(np.sum(increases)) + ".csv")
+        pd.concat(data).to_csv("data/case_G=5_c=" + str(np.sum(increases)) + ".csv")
 
     #model_data.to_csv("model_data_c=" + str(c_tot) + "_m=" + str(m).csv")
 

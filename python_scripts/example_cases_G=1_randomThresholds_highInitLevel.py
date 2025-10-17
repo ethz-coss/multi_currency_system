@@ -31,11 +31,11 @@ def main():
 
 
     # Number of iterations the model should run
-    runs = 3000
+    runs = 2000
     nreps = 10
 
 
-    init_global_params = 3000
+    init_global_params = 1000
     global_threashold = 2000
     gamma_variance = 300
     token_threashold = 10
@@ -175,7 +175,7 @@ def main():
 
     #model_data.to_csv("model_data_c=" + str(c_tot) + "_m=" + str(m).csv")
 
-    pd.concat(data).to_csv("example_scenarios_randGamma_highInitLevel.csv")
+    pd.concat(data).to_csv("example_scenarios_randGamma_lowInitLevel.csv")
       
 
 

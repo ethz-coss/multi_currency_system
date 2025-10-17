@@ -25,8 +25,8 @@ def main():
 
 
     # Number of iterations the model should run
-    runs = 50
-    nreps = 5
+    runs = 3000
+    nreps = 1
 
 
     init_global_params = 1000
@@ -160,7 +160,7 @@ def main():
 
     #model_data.to_csv("model_data_c=" + str(c_tot) + "_m=" + str(m).csv")
 
-    pd.concat(data).to_csv("example_scenarios.csv")
+    pd.concat(data).to_csv("example_scenarios_g=1.csv")
       
 
 

@@ -26,7 +26,7 @@ def main():
 
   # Number of iterations the model should run
   runs = 4000
-  nreps = 10 #10
+  nreps = 50 #10
   
   '''
   nglob = 4 #4
@@ -130,7 +130,7 @@ def main():
 
         
 
-      print(np.max(increases))
+      #print(np.max(increases))
 
       # increases = rng.uniform(0.1, 1, nglob)
       # increases = increases * c / np.sum(increases)
@@ -139,9 +139,9 @@ def main():
       model_params = {"nr_agents": nagents, "initial_tokens": np.zeros(nglob), "nr_global_params": nglob, 
                                         "mining_amounts": np.full(nglob, m), 
                                         "spending_amount": s,
-                                      "global_quantities": np.full(nglob, 700), 
+                                      "global_quantities": np.full(nglob, 1000), 
                                     "quantities_increase": np.full(nglob, c/nglob), #np.random.uniform(0.05, 0.35, nglob), #np.full(nglob, 0.2), #  g_i += c_i after each step
-                                    "quantity_threashold": rng.uniform(500,1500, size= (nagents,nglob)), #np.full((nagents,nglob), 1000),
+                                    "quantity_threashold": rng.uniform(2000,3000, size= (nagents,nglob)), #np.full((nagents,nglob), 1000),
                                     "currency_threshold": rng.uniform(50,100, size= (nagents,nglob)), #np.full((nagents,nglob), 100),
                                         "token_accounts": rng.uniform(50,100, size= (nagents,nglob)) #np.full((nagents,nglob), 100) 
                                         }
@@ -159,8 +159,8 @@ def main():
                     model_params["spending_amount"], rng)
 
       # Run the model
-    
-      data = model.run(numIterations=runs, printIt=True, dynamic_ci = True, incr_consts = increases)
+      print("rep = ", r)
+      data = model.run(numIterations=runs, printIt=False, dynamic_ci = True, incr_consts = increases)
       
       df = pd.DataFrame(data)
 
@@ -171,7 +171,7 @@ def main():
 
       total_data.append(df)
 
-  pd.concat(total_data).to_csv("increases_crisis.csv")
+  pd.concat(total_data).to_csv("data/increases_crisis_a.csv")
   #model_data.to_csv("model_data.csv")
 
 
